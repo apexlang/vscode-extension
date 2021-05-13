@@ -1,0 +1,132 @@
+{
+  "name": "widl-vscode-extension",
+  "displayName": "waPC Interface Defitinon Language (WIDL)",
+  "preview": true,
+  "private": false,
+  "description": "VS Code extension and language server for WIDL",
+  "icon": "assets/images/logo.png",
+  "author": "Phil Kedy",
+  "license": "Apache-2.0",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wapc/widl-vscode-extension"
+  },
+  "publisher": "waPC",
+  "categories": [],
+  "keywords": [
+    "widl idl codegen"
+  ],
+  "engines": {
+    "vscode": "^1.43.0"
+  },
+  "activationEvents": [
+    "onLanguage:widl"
+  ],
+  "main": "./client/out/extension",
+  "contributes": {
+    "languages": [
+      {
+        "id": "widl",
+        "extensions": [
+          ".widl"
+        ],
+        "aliases": [
+          "WIDL"
+        ],
+        "configuration": "./language/language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "widl",
+        "path": "./grammars/widl.json",
+        "scopeName": "source.widl"
+      },
+      {
+        "injectTo": [
+          "source.js",
+          "source.ts",
+          "source.js.jsx",
+          "source.tsx",
+          "source.vue"
+        ],
+        "scopeName": "inline.widl",
+        "path": "./grammars/widl.js.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.widl": "widl"
+        }
+      },
+      {
+        "injectTo": [
+          "source.reason",
+          "source.ocaml"
+        ],
+        "scopeName": "inline.widl.re",
+        "path": "./grammars/widl.re.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.widl": "widl"
+        }
+      },
+      {
+        "injectTo": [
+          "source.rescript"
+        ],
+        "scopeName": "inline.widl.res",
+        "path": "./grammars/widl.rescript.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.widl": "widl"
+        }
+      },
+      {
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "scopeName": "markdown.widl.codeblock",
+        "path": "./grammars/widl.markdown.codeblock.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.widl": "widl"
+        }
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "VSCode WIDL",
+      "properties": {
+        "widl.maxNumberOfProblems": {
+          "scope": "resource",
+          "type": "number",
+          "default": 100,
+          "description": "Controls the maximum number of problems produced by the server."
+        },
+        "widl.trace.server": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "description": "Traces the communication between VS Code and the language server."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -b",
+    "watch": "tsc -b -w",
+    "postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
+    "test": "sh ./scripts/e2e.sh"
+  },
+  "devDependencies": {
+    "@types/mocha": "^8.2.2",
+    "@types/node": "^12.12.0",
+    "@typescript-eslint/eslint-plugin": "^4.21.0",
+    "@typescript-eslint/parser": "^4.21.0",
+    "eslint": "^7.23.0",
+    "mocha": "^8.3.2",
+    "typescript": "^4.2.3"
+  }
+}

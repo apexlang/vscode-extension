@@ -148,8 +148,8 @@
     },
     "widl-type-definition": {
       "comment": "key (optionalArgs): Type",
-      "begin": "\\s*([_A-Za-z][_0-9A-Za-z]*)(?=\\s*\\(|:)",
-      "end": "(?=\\s*(([_A-Za-z][_0-9A-Za-z]*)\\s*(\\(|:)|(})))|\\s*(,)",
+      "begin": "\\s*([_A-Za-z][_0-9A-Za-z]*)(?=\\s*(\\(|\\{)|:)",
+      "end": "(?=\\s*(([_A-Za-z][_0-9A-Za-z]*)\\s*((\\(|\\{)|:)|(})))|\\s*(,)",
       "beginCaptures": {
         "1": { "name": "variable.widl" }
       },
@@ -209,8 +209,8 @@
       "end": "\"\"\""
     },
     "widl-variable-definitions": {
-      "begin": "\\s*(\\()",
-      "end": "\\s*(\\))",
+      "begin": "\\s*((\\(|\\{))",
+      "end": "\\s*((\\)|\\}))",
       "captures": {
         "1": { "name": "meta.brace.round.widl" }
       },
@@ -225,8 +225,8 @@
     "widl-variable-definition": {
       "comment": "variable: type = value,.... which may be a list",
       "name": "meta.variables.widl",
-      "begin": "\\s*(\\$?[_A-Za-z][_0-9A-Za-z]*)(?=\\s*\\(|:)",
-      "end": "(?=\\s*((\\$?[_A-Za-z][_0-9A-Za-z]*)\\s*(\\(|:)|(}|\\))))|\\s*(,)",
+      "begin": "\\s*(\\$?[_A-Za-z][_0-9A-Za-z]*)(?=\\s*(\\(|\\{)|:)",
+      "end": "(?=\\s*((\\$?[_A-Za-z][_0-9A-Za-z]*)\\s*((\\(|\\{)|:)|(}|\\))))|\\s*(,)",
       "beginCaptures": {
         "1": { "name": "variable.parameter.widl" }
       },

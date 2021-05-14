@@ -162,21 +162,19 @@ function resolver(location: string, _from: string): string {
   let loc = path.join(definitionsDir, ...location.split("/"));
   if (!loc.endsWith(".widl")) {
     const widlLoc = loc + ".widl";
-    let found = false;
     try {
       const stats = fs.statSync(widlLoc);
-      found = stats.isFile();
+      if (stats.isFile()) {
+        return fs.readFileSync(widlLoc).toString();
+      }
     } catch (_) {
-      found = false; // Make linter happy
     }
-    if (!found) {
-      const stats = fs.statSync(loc);
-      if (!stats.isFile()) {
-        if (stats.isDirectory()) {
-          loc = path.join(loc, "index.widl");
-        } else {
-          loc += ".widl";
-        }
+    const stats = fs.statSync(loc);
+    if (!stats.isFile()) {
+      if (stats.isDirectory()) {
+        loc = path.join(loc, "index.widl");
+      } else {
+        loc += ".widl";
       }
     }
   }

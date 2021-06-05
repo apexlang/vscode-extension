@@ -12,7 +12,7 @@
 		"url": "https://github.com/wapc/widl-vscode-extension"
 	},
 	"dependencies": {
-		"@wapc/widl": "^0.0.6",
+		"@wapc/widl": "^0.0.9",
 		"vscode-languageserver": "^7.0.0",
 		"vscode-languageserver-textdocument": "^1.0.1"
 	},

@@ -1,13 +1,13 @@
 {
-	"name": "widl-client",
-	"description": "VSCode client for the WIDL language server",
+	"name": "apex-client",
+	"description": "VSCode client for the Apex language server",
 	"author": "Phil Kedy",
-	"license": "MIT",
-	"version": "0.0.1",
-	"publisher": "wapc",
+	"license": "Apache-2.0",
+	"version": "0.0.3",
+	"publisher": "apexlang",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/wapc/widl-vscode-extension"
+		"url": "https://github.com/apexlang/vscode-extension"
 	},
 	"engines": {
 		"vscode": "^1.52.0"

@@ -1,19 +1,19 @@
 {
-	"compilerOptions": {
-		"target": "es2019",
-		"lib": ["ES2019"],
-		"module": "commonjs",
-		"moduleResolution": "node",
-		"sourceMap": true,
-		"strict": true,
-		"outDir": "out",
-		"rootDir": "src",
-		"baseUrl": ".",
-		"paths": {
-			"@wapc/widl": ["node_modules/@wapc/widl/dist/types"],
-			"@wapc/widl/*": ["node_modules/@wapc/widl/dist/types/*"]
-		},
-	},
-	"include": ["src"],
-	"exclude": ["node_modules", ".vscode-test"]
+  "compilerOptions": {
+    "target": "es2019",
+    "lib": ["ES2019"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "strict": true,
+    "outDir": "out",
+    "rootDir": "src",
+    "baseUrl": ".",
+    "paths": {
+      "@apexlang/core": ["node_modules/@apexlang/core/dist/types"],
+      "@apexlang/core/*": ["node_modules/@apexlang/core/dist/types/*"]
+    },
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", ".vscode-test"]
 }

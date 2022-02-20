@@ -1,7 +1,3 @@
-/* --------------------------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Licensed under the MIT License. See License.txt in the project root for license information.
- * ------------------------------------------------------------------------------------------ */
 import {
   createConnection,
   TextDocuments,
@@ -19,7 +15,7 @@ import {
 } from "vscode-languageserver/node";
 
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { parse, validate } from "@wapc/widl";
+import { parse, validate } from "@apexlang/core";
 import {
   EnumDefinition,
   Kind,
@@ -27,9 +23,9 @@ import {
   Node,
   TypeDefinition,
   UnionDefinition,
-} from "@wapc/widl/ast";
-import { CommonRules } from "@wapc/widl/rules";
-import { WidlError } from "@wapc/widl/error";
+} from "@apexlang/core/ast";
+import { CommonRules } from "@apexlang/core/rules";
+import { ApexError } from "@apexlang/core/error";
 import * as os from "os";
 import * as path from "path";
 import * as fs from "fs";
@@ -101,27 +97,27 @@ connection.onInitialized(() => {
   }
 });
 
-// The WIDL settings
-interface WIDLSettings {
+// The Apex settings
+interface ApexSettings {
   maxNumberOfProblems: number;
 }
 
 // The global settings, used when the `workspace/configuration` request is not supported by the client.
 // Please note that this is not the case when using this server with the client provided in this example
 // but could happen with other clients.
-const defaultSettings: WIDLSettings = { maxNumberOfProblems: 1000 };
-let globalSettings: WIDLSettings = defaultSettings;
+const defaultSettings: ApexSettings = { maxNumberOfProblems: 1000 };
+let globalSettings: ApexSettings = defaultSettings;
 
 // Cache the settings of all open documents
-const documentSettings: Map<string, Thenable<WIDLSettings>> = new Map();
+const documentSettings: Map<string, Thenable<ApexSettings>> = new Map();
 
 connection.onDidChangeConfiguration((change) => {
   if (hasConfigurationCapability) {
     // Reset all cached document settings
     documentSettings.clear();
   } else {
-    globalSettings = <WIDLSettings>(
-      (change.settings.widl || defaultSettings)
+    globalSettings = <ApexSettings>(
+      (change.settings.apexlang || defaultSettings)
     );
   }
 
@@ -129,7 +125,7 @@ connection.onDidChangeConfiguration((change) => {
   documents.all().forEach(validateTextDocument);
 });
 
-function getDocumentSettings(resource: string): Thenable<WIDLSettings> {
+function getDocumentSettings(resource: string): Thenable<ApexSettings> {
   if (!hasConfigurationCapability) {
     return Promise.resolve(globalSettings);
   }
@@ -137,7 +133,7 @@ function getDocumentSettings(resource: string): Thenable<WIDLSettings> {
   if (!result) {
     result = connection.workspace.getConfiguration({
       scopeUri: resource,
-      section: "widl",
+      section: "apexlang",
     });
     documentSettings.set(resource, result);
   }
@@ -156,25 +152,26 @@ documents.onDidChangeContent((change) => {
 });
 
 const home = os.homedir();
-const definitionsDir = path.join(home, ".wapc", "definitions");
+const definitionsDir = path.join(home, ".apex", "definitions");
 
 function resolver(location: string, _from: string): string {
   let loc = path.join(definitionsDir, ...location.split("/"));
-  if (!loc.endsWith(".widl")) {
-    const widlLoc = loc + ".widl";
+  if (!loc.endsWith(".apex")) {
+    const apexLoc = loc + ".apex";
     try {
-      const stats = fs.statSync(widlLoc);
+      const stats = fs.statSync(apexLoc);
       if (stats.isFile()) {
-        return fs.readFileSync(widlLoc).toString();
+        return fs.readFileSync(apexLoc).toString();
       }
     } catch (_) {
+      // Do nothing.
     }
     const stats = fs.statSync(loc);
     if (!stats.isFile()) {
       if (stats.isDirectory()) {
-        loc = path.join(loc, "index.widl");
+        loc = path.join(loc, "index.apex");
       } else {
-        loc += ".widl";
+        loc += ".apex";
       }
     }
   }
@@ -242,7 +239,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
       return problems < settings.maxNumberOfProblems;
     });
   } catch (e) {
-    const we = e as WidlError;
+    const we = e as ApexError;
     if (we.nodes != undefined) {
       const node = we.nodes as Node;
       const loc = node.getLoc()!;

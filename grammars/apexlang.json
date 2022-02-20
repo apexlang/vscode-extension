@@ -1,0 +1,760 @@
+{
+  "name": "Apex",
+  "scopeName": "source.apexlang",
+  "fileTypes": ["apex", "apexlang"],
+  "patterns": [{ "include": "#apex" }],
+  "repository": {
+    "apex": {
+      "patterns": [
+        { "include": "#apex-comment" },
+        { "include": "#apex-description-docstring" },
+        { "include": "#apex-description-singleline" },
+        { "include": "#apex-namespace-definition" },
+        { "include": "#apex-alias-definition" },
+        { "include": "#apex-import-definition" },
+        { "include": "#apex-directive-definition" },
+        { "include": "#apex-type-interface" },
+        { "include": "#apex-enum" },
+        { "include": "#apex-union" },
+        { "include": "#literal-quasi-embedded" }
+      ]
+    },
+    "apex-namespace-definition": {
+      "name": "meta.namespace.apex",
+      "begin": "\\s*(\\bnamespace\\b)\\s*",
+      "end": "(?=.)",
+      "applyEndPatternLast": 1,
+      "beginCaptures": {
+        "1": { "name": "keyword.namespace.apex" }
+      },
+      "patterns": [
+        { "include": "#apex-string-value" },
+        { "include": "#apex-skip-newlines" },
+        { "include": "#apex-comment" },
+        { "include": "#literal-quasi-embedded" }
+      ]
+    },
+    "apex-alias-definition": {
+      "name": "meta.alias.apex",
+      "match": "\\s*(alias)\\s*([_A-Za-z][_0-9A-Za-z]*)\\s*=\\s*([_A-Za-z][_0-9A-Za-z]*)",
+      "captures": {
+        "1": { "name": "keyword.alias.apex" },
+        "2": { "name": "support.type.apex" },
+        "3": { "name": "support.type.apex" }
+      }
+    },
+    "apex-import-definition": {
+      "begin": "\\s*(\\bimport\\b)\\s(\\*)?",
+      "end": "(?=.)",
+      "applyEndPatternLast": 1,
+      "beginCaptures": {
+        "1": { "name": "keyword.control.import.apex" }
+      },
+      "patterns": [
+        {
+          "name": "meta.objectvalues.apex",
+          "begin": "\\s*+({)",
+          "end": "\\s*(})",
+          "beginCaptures": {
+            "1": { "name": "meta.brace.curly.apex" }
+          },
+          "endCaptures": {
+            "1": { "name": "meta.brace.curly.apex" }
+          },
+          "patterns": [
+            { "include": "#apex-comment" },
+            { "include": "#apex-description-docstring" },
+            { "include": "#apex-description-singleline" },
+            {
+              "match": "\\s*([A-Za-z][_0-9A-Za-z]*)\\s*((as)\\s*([A-Za-z][_0-9A-Za-z]*))?",
+              "captures": {
+                "1": { "name": "support.type.apex" },
+                "3": { "name": "keyword.control.as.apex" },
+                "4": { "name": "support.type.apex" }
+              }
+            },
+            { "include": "#literal-quasi-embedded" }
+          ]
+        },
+        {
+          "begin": "\\s*(\\bfrom\\b)\\s*",
+          "end": "(?=.)",
+          "applyEndPatternLast": 1,
+          "beginCaptures": {
+            "1": { "name": "keyword.control.from.apex" }
+          },
+          "patterns": [
+            { "include": "#apex-string-value" },
+            { "include": "#apex-skip-newlines" },
+            { "include": "#apex-comment" },
+            { "include": "#literal-quasi-embedded" }
+          ]
+        },
+        { "include": "#apex-skip-newlines" },
+        { "include": "#apex-comment" },
+        { "include": "#literal-quasi-embedded" }
+      ]
+    },
+    "apex-type-interface": {
+      "name": "meta.type.interface.apex",
+      "begin": "\\s*\\b(?:(extends?)?\\b\\s*\\b(type)|(interface)|(role))\\b\\s*([_A-Za-z][_0-9A-Za-z]*)?",
+      "end": "(?=.)",
+      "applyEndPatternLast": 1,
+      "captures": {
+        "1": { "name": "keyword.type.apex" },
+        "2": { "name": "keyword.type.apex" },
+        "3": { "name": "keyword.interface.apex" },
+        "4": { "name": "keyword.role.apex" },
+        "5": { "name": "support.type.apex" }
+      },
+      "patterns": [
+        {
+          "begin": "\\s*\\b(extends)\\b\\s*",
+          "end": "\\s*(?={)",
+          "beginCaptures": {
+            "1": { "name": "keyword.extends.apex" }
+          },
+          "patterns": [
+            {
+              "match": "\\s*([_A-Za-z][_0-9A-Za-z]*)",
+              "captures": {
+                "1": { "name": "support.type.apex" }
+              }
+            },
+            { "include": "#apex-ampersand" },
+            { "include": "#apex-comma" }
+          ]
+        },
+        { "include": "#apex-comment" },
+        { "include": "#apex-description-docstring" },
+        { "include": "#apex-description-singleline" },
+        { "include": "#apex-directive" },
+        { "include": "#apex-type-object" },
+        { "include": "#literal-quasi-embedded" },
+        { "include": "#apex-ignore-spaces" }
+      ]
+    },
+    "apex-ignore-spaces": {
+      "match": "\\s*"
+    },
+    "apex-type-object": {
+      "name": "meta.type.object.apex",
+      "begin": "\\s*({)",
+      "end": "\\s*(})",
+      "beginCaptures": {
+        "1": { "name": "punctuation.operation.apex" }
+      },
+      "endCaptures": {
+        "1": { "name": "punctuation.operation.apex" }
+      },
+      "patterns": [
+        { "include": "#apex-comment" },
+        { "include": "#apex-description-docstring" },
+        { "include": "#apex-description-singleline" },
+        { "include": "#apex-object-type" },
+        { "include": "#apex-type-definition" },
+        { "include": "#literal-quasi-embedded" }
+      ]
+    },
+    "apex-type-definition": {
+      "comment": "key (optionalArgs): Type",
+      "begin": "\\s*([_A-Za-z][_0-9A-Za-z]*)(?=\\s*(\\(|\\{)|:)",
+      "end": "(?=\\s*(([_A-Za-z][_0-9A-Za-z]*)\\s*((\\(|\\{)|:)|(})))|\\s*(,)",
+      "beginCaptures": {
+        "1": { "name": "variable.apex" }
+      },
+      "endCaptures": {
+        "5": { "name": "punctuation.comma.apex" }
+      },
+      "patterns": [
+        { "include": "#apex-comment" },
+        { "include": "#apex-description-docstring" },
+        { "include": "#apex-description-singleline" },
+        { "include": "#apex-variable-definitions" },
+        { "include": "#apex-input-types" },
+        { "include": "#literal-quasi-embedded" }
+      ]
+    },
+    "apex-comment": {
+      "patterns": [
+        {
+          "comment": "need to prefix comment space with a scope else Atom's reflow cmd doesn't work",
+          "name": "comment.line.apex.js",
+          "match": "(\\s*)(#).*",
+          "captures": {
+            "1": {
+              "name": "punctuation.whitespace.comment.leading.apex"
+            }
+          }
+        },
+        {
+          "name": "comment.line.apex.js",
+          "begin": "(\"\"\")",
+          "end": "(\"\"\")",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.whitespace.comment.leading.apex"
+            }
+          }
+        },
+        {
+          "name": "comment.line.apex.js",
+          "begin": "(\")",
+          "end": "(\")",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.whitespace.comment.leading.apex"
+            }
+          }
+        }
+      ]
+    },
+    "apex-description-singleline": {
+      "name": "comment.line.number-sign.apex",
+      "match": "#(?=([^\"]*\"[^\"]*\")*[^\"]*$).*$"
+    },
+    "apex-description-docstring": {
+      "name": "comment.block.apex",
+      "begin": "\"\"\"",
+      "end": "\"\"\""
+    },
+    "apex-variable-definitions": {
+      "begin": "\\s*((\\(|\\{))",
+      "end": "\\s*((\\)|\\}))",
+      "captures": {
+        "1": { "name": "meta.brace.round.apex" }
+      },
+      "patterns": [
+        { "include": "#apex-comment" },
+        { "include": "#apex-description-docstring" },
+        { "include": "#apex-description-singleline" },
+        { "include": "#apex-variable-definition" },
+        { "include": "#literal-quasi-embedded" }
+      ]
+    },
+    "apex-variable-definition": {
+      "comment": "variable: type = value,.... which may be a list",
+      "name": "meta.variables.apex",
+      "begin": "\\s*(\\$?[_A-Za-z][_0-9A-Za-z]*)(?=\\s*(\\(|\\{)|:)",
+      "end": "(?=\\s*((\\$?[_A-Za-z][_0-9A-Za-z]*)\\s*((\\(|\\{)|:)|(}|\\))))|\\s*(,)",
+      "beginCaptures": {
+        "1": { "name": "variable.parameter.apex" }
+      },
+      "endCaptures": {
+        "5": { "name": "punctuation.comma.apex" }
+      },
+      "patterns": [
+        { "include": "#apex-comment" },
+        { "include": "#apex-description-docstring" },
+        { "include": "#apex-description-singleline" },
+        { "include": "#apex-colon" },
+        { "include": "#apex-input-types" },
+        { "include": "#apex-variable-assignment" },
+        { "include": "#literal-quasi-embedded" },
+        { "include": "#apex-skip-newlines" }
+      ]
+    },
+    "apex-field-definitions": {
+      "begin": "\\s*(\\{)",
+      "end": "\\s*(\\})",
+      "captures": {
+        "1": { "name": "meta.brace.round.apex" }
+      },
+      "patterns": [
+        { "include": "#apex-comment" },
+        { "include": "#apex-description-docstring" },
+        { "include": "#apex-description-singleline" },
+        { "include": "#apex-field-definition" },
+        { "include": "#literal-quasi-embedded" }
+      ]
+    },
+    "apex-field-definition": {
+      "comment": "variable: type = value,.... which may be a list",
+      "name": "meta.variables.apex",
+      "begin": "\\s*(\\$?[_A-Za-z][_0-9A-Za-z]*)(?=\\s*\\(|:)",
+      "end": "(?=\\s*((\\$?[_A-Za-z][_0-9A-Za-z]*)\\s*(\\(|:)|(}|\\))))|\\s*(,)",
+      "beginCaptures": {
+        "1": { "name": "variable.field.apex" }
+      },
+      "endCaptures": {
+        "5": { "name": "punctuation.comma.apex" }
+      },
+      "patterns": [
+        { "include": "#apex-comment" },
+        { "include": "#apex-description-docstring" },
+        { "include": "#apex-description-singleline" },
+        { "include": "#apex-colon" },
+        { "include": "#apex-input-types" },
+        { "include": "#apex-variable-assignment" },
+        { "include": "#literal-quasi-embedded" },
+        { "include": "#apex-skip-newlines" }
+      ]
+    },
+    "apex-input-types": {
+      "patterns": [
+        { "include": "#apex-scalar-type" },
+        {
+          "match": "\\s*([_A-Za-z][_0-9A-Za-z]*)(?:\\s*(\\?))?",
+          "captures": {
+            "1": { "name": "support.type.apex" },
+            "2": { "name": "keyword.operator.nulltype.apex" }
+          }
+        },
+        {
+          "name": "meta.type.list.apex",
+          "begin": "\\s*(\\[)",
+          "end": "\\s*(\\])(?:\\s*(\\?))?",
+          "endCaptures": {
+            "1": { "name": "meta.brace.square.apex" },
+            "2": { "name": "keyword.operator.nulltype.apex" }
+          },
+          "patterns": [
+            { "include": "#apex-comment" },
+            { "include": "#apex-description-docstring" },
+            { "include": "#apex-description-singleline" },
+            { "include": "#apex-input-types" },
+            { "include": "#apex-comma" },
+            { "include": "#literal-quasi-embedded" }
+          ]
+        },
+        {
+          "name": "meta.type.map.apex",
+          "begin": "\\s*+(\\{)",
+          "end": "\\s*(\\})(?:\\s*(\\?))?",
+          "endCaptures": {
+            "1": { "name": "meta.brace.curly.apex" },
+            "2": { "name": "keyword.operator.nulltype.apex" }
+          },
+          "patterns": [
+            { "include": "#apex-comment" },
+            { "include": "#apex-description-docstring" },
+            { "include": "#apex-description-singleline" },
+            { "include": "#apex-input-types" },
+            { "include": "#apex-colon" },
+            { "include": "#apex-input-types" },
+            { "include": "#apex-comma" },
+            { "include": "#literal-quasi-embedded" }
+          ]
+        }
+      ]
+    },
+    "apex-map": {
+      "patterns": [
+        {
+          "name": "meta.map.apex",
+          "begin": "\\s*+({)",
+          "end": "\\s*(})",
+          "beginCaptures": {
+            "1": { "name": "meta.brace.curly.apex" }
+          },
+          "endCaptures": {
+            "1": { "name": "meta.brace.curly.apex" }
+          },
+          "patterns": [
+            { "include": "#apex-input-types" },
+            { "include": "#apex-colon" },
+            { "include": "#apex-input-types" }
+          ]
+        }
+      ]
+    },
+    "apex-scalar-type": {
+      "match": "\\s*\\b(i8|u8|i16|u16|i32|u32|i64|u64|f32|f64|bool|string|datetime|bytes|raw)\\b(?:\\s*(!))?",
+      "captures": {
+        "1": { "name": "support.type.builtin.apex" },
+        "2": { "name": "keyword.operator.nulltype.apex" }
+      }
+    },
+    "apex-variable-assignment": {
+      "begin": "\\s(=)",
+      "end": "(?=[\n,)])",
+      "applyEndPatternLast": 1,
+      "beginCaptures": {
+        "1": { "name": "punctuation.assignment.apex" }
+      },
+      "patterns": [{ "include": "#apex-value" }]
+    },
+    "apex-comma": {
+      "match": "\\s*(,)",
+      "captures": {
+        "1": { "name": "punctuation.comma.apex" }
+      }
+    },
+    "apex-ampersand": {
+      "match": "\\s*(&)",
+      "captures": {
+        "1": { "name": "keyword.operator.logical.apex" }
+      }
+    },
+    "apex-colon": {
+      "match": "\\s*(:)",
+      "captures": {
+        "1": { "name": "punctuation.colon.apex" }
+      }
+    },
+    "apex-union-mark": {
+      "match": "\\s*(\\|)",
+      "captures": {
+        "1": { "name": "punctuation.union.apex" }
+      }
+    },
+    "apex-name": {
+      "match": "\\s*([_A-Za-z][_0-9A-Za-z]*)",
+      "captures": {
+        "1": { "name": "entity.name.function.apex" }
+      }
+    },
+    "apex-directive": {
+      "begin": "\\s*((@)([_A-Za-z][_0-9A-Za-z]*))",
+      "end": "(?=.)",
+      "applyEndPatternLast": 1,
+      "beginCaptures": {
+        "1": { "name": "entity.name.function.directive.apex" }
+      },
+      "patterns": [
+        { "include": "#apex-comment" },
+        { "include": "#apex-description-docstring" },
+        { "include": "#apex-description-singleline" },
+        { "include": "#apex-arguments" },
+        { "include": "#literal-quasi-embedded" },
+        { "include": "#apex-skip-newlines" }
+      ]
+    },
+    "apex-directive-definition": {
+      "begin": "\\s*(\\bdirective\\b)\\s*(@[_A-Za-z][_0-9A-Za-z]*)",
+      "end": "(?=.)",
+      "applyEndPatternLast": 1,
+      "beginCaptures": {
+        "1": { "name": "keyword.directive.apex" },
+        "2": { "name": "entity.name.function.directive.apex" },
+        "3": { "name": "keyword.on.apex" },
+        "4": { "name": "support.type.apex" },
+        "5": { "name": "keyword.require.apex" }
+      },
+      "patterns": [
+        { "include": "#apex-variable-definitions" },
+        {
+          "begin": "\\s*(\\bon\\b)\\s*([_A-Za-z]*)",
+          "end": "(?=.)",
+          "applyEndPatternLast": 1,
+          "beginCaptures": {
+            "1": { "name": "keyword.on.apex" },
+            "2": { "name": "support.type.location.apex" }
+          },
+          "patterns": [
+            { "include": "#apex-skip-newlines" },
+            { "include": "#apex-comment" },
+            { "include": "#literal-quasi-embedded" },
+            {
+              "match": "\\s*(\\|)\\s*([_A-Za-z]*)",
+              "captures": {
+                "2": { "name": "support.type.location.apex" }
+              }
+            }
+          ]
+        },
+        { "include": "#apex-skip-newlines" },
+        { "include": "#apex-comment" },
+        {
+          "match": "\\s*(\\brequire\\b)",
+          "captures": {
+            "1": { "name": "keyword.require.apex" }
+          }
+        },
+        { "include": "#apex-skip-newlines" },
+        { "include": "#apex-comment" },
+        {
+          "begin": "\\s*(@[_A-Za-z][_0-9A-Za-z]*)\\s*(\\bon\\b)\\s*([_A-Za-z]*)",
+          "end": "(?=.)",
+          "applyEndPatternLast": 1,
+          "beginCaptures": {
+            "1": { "name": "entity.name.function.other.apex" },
+            "2": { "name": "keyword.on.apex" },
+            "3": { "name": "support.type.location.apex" }
+          },
+          "patterns": [
+            { "include": "#apex-skip-newlines" },
+            { "include": "#apex-comment" },
+            { "include": "#literal-quasi-embedded" },
+            {
+              "match": "\\s*(\\|)\\s*([_A-Za-z]*)",
+              "captures": {
+                "2": { "name": "support.type.location.apex" }
+              }
+            }
+          ]
+        },
+        { "include": "#apex-skip-newlines" },
+        { "include": "#apex-comment" },
+        { "include": "#literal-quasi-embedded" }
+      ]
+    },
+    "apex-arguments": {
+      "name": "meta.arguments.apex",
+      "begin": "\\s*(\\()",
+      "end": "\\s*(\\))",
+      "beginCaptures": {
+        "1": { "name": "meta.brace.round.directive.apex" }
+      },
+      "endCaptures": {
+        "1": { "name": "meta.brace.round.directive.apex" }
+      },
+      "patterns": [
+        { "include": "#apex-comment" },
+        { "include": "#apex-description-docstring" },
+        { "include": "#apex-description-singleline" },
+        {
+          "begin": "\\s*([_A-Za-z][_0-9A-Za-z]*)(?:\\s*(:))",
+          "end": "(?=\\s*(?:(?:([_A-Za-z][_0-9A-Za-z]*)\\s*(:))|\\)))|\\s*(,)",
+          "beginCaptures": {
+            "1": { "name": "variable.parameter.apex" },
+            "2": { "name": "punctuation.colon.apex" }
+          },
+          "endCaptures": {
+            "3": { "name": "punctuation.comma.apex" }
+          },
+          "patterns": [
+            { "include": "#apex-comment" },
+            { "include": "#apex-description-docstring" },
+            { "include": "#apex-description-singleline" },
+            { "include": "#apex-value" },
+            { "include": "#apex-skip-newlines" }
+          ]
+        },
+        { "include": "#literal-quasi-embedded" }
+      ]
+    },
+    "apex-variable-name": {
+      "match": "\\s*(\\$[_A-Za-z][_0-9A-Za-z]*)",
+      "captures": {
+        "1": { "name": "variable.apex" }
+      }
+    },
+    "apex-float-value": {
+      "match": "\\s*(-?(0|[1-9][0-9]*)(\\.[0-9]+)?((e|E)(\\+|-)?[0-9]+)?)",
+      "captures": {
+        "1": { "name": "constant.numeric.float.apex" }
+      }
+    },
+    "apex-boolean-value": {
+      "match": "\\s*\\b(true|false)\\b",
+      "captures": {
+        "1": { "name": "constant.language.boolean.apex" }
+      }
+    },
+    "apex-null-value": {
+      "match": "\\s*\\b(null)\\b",
+      "captures": {
+        "1": { "name": "constant.language.null.apex" }
+      }
+    },
+    "apex-string-value": {
+      "contentName": "string.quoted.double.apex",
+      "begin": "\\s*+((\"))",
+      "end": "\\s*+(?:((\"))|(\n))",
+      "beginCaptures": {
+        "1": { "name": "string.quoted.double.apex" },
+        "2": { "name": "punctuation.definition.string.begin.apex" }
+      },
+      "endCaptures": {
+        "1": { "name": "string.quoted.double.apex" },
+        "2": { "name": "punctuation.definition.string.end.apex" },
+        "3": { "name": "invalid.illegal.newline.apex" }
+      },
+      "patterns": [
+        { "include": "#apex-string-content" },
+        { "include": "#literal-quasi-embedded" }
+      ]
+    },
+    "apex-string-content": {
+      "patterns": [
+        {
+          "name": "constant.character.escape.apex",
+          "match": "\\\\[/'\"\\\\nrtbf]"
+        },
+        {
+          "name": "constant.character.escape.apex",
+          "match": "\\\\u([0-9a-fA-F]{4})"
+        }
+      ]
+    },
+    "apex-enum": {
+      "name": "meta.enum.apex",
+      "begin": "\\s*+\\b(enum)\\b\\s*([_A-Za-z][_0-9A-Za-z]*)",
+      "end": "(?<=})",
+      "beginCaptures": {
+        "1": { "name": "keyword.enum.apex" },
+        "2": { "name": "support.type.enum.apex" }
+      },
+      "patterns": [
+        {
+          "name": "meta.type.object.apex",
+          "begin": "\\s*({)",
+          "end": "\\s*(})",
+          "beginCaptures": {
+            "1": { "name": "punctuation.operation.apex" }
+          },
+          "endCaptures": {
+            "1": { "name": "punctuation.operation.apex" }
+          },
+          "patterns": [
+            { "include": "#apex-object-type" },
+            { "include": "#apex-comment" },
+            { "include": "#apex-description-docstring" },
+            { "include": "#apex-description-singleline" },
+            { "include": "#apex-enum-value" },
+            { "include": "#apex-float-value" },
+            { "include": "#apex-string-value" },
+            { "include": "#literal-quasi-embedded" }
+          ]
+        }
+      ]
+    },
+    "apex-enum-value": {
+      "begin": "\\s*(?!=\\b(true|false|null)\\b)([_A-Za-z][_0-9A-Za-z]*)",
+      "end": "(?=.)",
+      "applyEndPatternLast": 1,
+      "captures": {
+        "1": { "name": "keyword.operator.boolean.apex" },
+        "2": { "name": "variable.enumvalue.apex" }
+      },
+      "patterns": [
+        { "include": "#apex-comment" },
+        { "include": "#apex-description-docstring" },
+        { "include": "#apex-description-singleline" },
+        {
+          "match": "(\\s*=)"
+        },
+        { "include": "#apex-float-value" },
+        { "include": "#apex-string-value" },
+        {
+          "match": "(\\s*as\\s)",
+          "captures": {
+            "1": { "name": "keyword.control.as.apex" }
+          }
+        },
+        { "include": "#apex-string-value" },
+        { "include": "#apex-directive" },
+        { "include": "#literal-quasi-embedded" },
+        { "include": "#apex-skip-newlines" }
+      ]
+    },
+    "apex-value": {
+      "patterns": [
+        { "include": "#apex-comment" },
+        { "include": "#apex-description-docstring" },
+        { "include": "#apex-variable-name" },
+        { "include": "#apex-float-value" },
+        { "include": "#apex-string-value" },
+        { "include": "#apex-boolean-value" },
+        { "include": "#apex-null-value" },
+        { "include": "#apex-enum-value" },
+        { "include": "#apex-list-value" },
+        { "include": "#apex-object-value" },
+        { "include": "#literal-quasi-embedded" }
+      ]
+    },
+    "apex-list-value": {
+      "patterns": [
+        {
+          "name": "meta.listvalues.apex",
+          "begin": "\\s*+(\\[)",
+          "end": "\\s*(\\])",
+          "endCaptures": {
+            "1": { "name": "meta.brace.square.apex" }
+          },
+          "beginCaptures": {
+            "1": { "name": "meta.brace.square.apex" }
+          },
+          "patterns": [{ "include": "#apex-value" }]
+        }
+      ]
+    },
+    "apex-object-value": {
+      "patterns": [
+        {
+          "name": "meta.objectvalues.apex",
+          "begin": "\\s*+({)",
+          "end": "\\s*(})",
+          "beginCaptures": {
+            "1": { "name": "meta.brace.curly.apex" }
+          },
+          "endCaptures": {
+            "1": { "name": "meta.brace.curly.apex" }
+          },
+          "patterns": [
+            { "include": "#apex-object-field" },
+            { "include": "#apex-value" }
+          ]
+        }
+      ]
+    },
+    "apex-object-field": {
+      "match": "\\s*(([_A-Za-z][_0-9A-Za-z]*))\\s*(:)",
+      "captures": {
+        "1": { "name": "constant.object.key.apex" },
+        "2": { "name": "string.unquoted.apex" },
+        "3": { "name": "punctuation.apex" }
+      }
+    },
+    "apex-union": {
+      "begin": "\\s*\\b(union)\\b\\s*([_A-Za-z][_0-9A-Za-z]*)",
+      "end": "(?=.)",
+      "applyEndPatternLast": 1,
+      "captures": {
+        "1": { "name": "keyword.union.apex" },
+        "2": { "name": "support.type.apex" }
+      },
+      "patterns": [
+        {
+          "begin": "\\s*(=)\\s*([_A-Za-z][_0-9A-Za-z]*)",
+          "end": "(?=.)",
+          "applyEndPatternLast": 1,
+          "captures": {
+            "1": { "name": "punctuation.assignment.apex" },
+            "2": { "name": "support.type.apex" }
+          },
+          "patterns": [
+            { "include": "#apex-comment" },
+            { "include": "#apex-description-docstring" },
+            { "include": "#apex-description-singleline" },
+            { "include": "#apex-skip-newlines" },
+            { "include": "#literal-quasi-embedded" },
+            {
+              "match": "\\s*(\\|)\\s*([_A-Za-z][_0-9A-Za-z]*)",
+              "captures": {
+                "1": { "name": "punctuation.or.apex" },
+                "2": { "name": "support.type.apex" }
+              }
+            }
+          ]
+        },
+        { "include": "#apex-comment" },
+        { "include": "#apex-description-docstring" },
+        { "include": "#apex-description-singleline" },
+        { "include": "#apex-skip-newlines" },
+        { "include": "#literal-quasi-embedded" }
+      ]
+    },
+    "native-interpolation": {
+      "name": "native.interpolation",
+      "begin": "\\s*(\\${)",
+      "end": "(})",
+      "beginCaptures": {
+        "1": { "name": "keyword.other.substitution.begin" }
+      },
+      "endCaptures": {
+        "1": { "name": "keyword.other.substitution.end" }
+      },
+      "patterns": [
+        { "include": "source.js" },
+        { "include": "source.ts" },
+        { "include": "source.js.jsx" },
+        { "include": "source.tsx" }
+      ]
+    },
+    "apex-skip-newlines": {
+      "match": "\\s*\n"
+    }
+  }
+}

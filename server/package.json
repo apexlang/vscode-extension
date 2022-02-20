@@ -1,18 +1,18 @@
 {
-	"name": "widl-language-server",
-	"description": "WIDL language server in node.",
-	"version": "0.0.1",
+	"name": "apex-language-server",
+	"description": "Apex language server in node.",
+	"version": "0.0.3",
 	"author": "Phil Kedy",
-	"license": "MIT",
+	"license": "Apache-2.0",
 	"engines": {
 		"node": "*"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/wapc/widl-vscode-extension"
+		"url": "https://github.com/apexlang/vscode-extension"
 	},
 	"dependencies": {
-		"@wapc/widl": "^0.0.11",
+		"@apexlang/core": "^0.0.14",
 		"vscode-languageserver": "^7.0.0",
 		"vscode-languageserver-textdocument": "^1.0.1"
 	},

@@ -22,21 +22,23 @@ import {
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { parse, validate } from "@apexlang/core";
 import {
-  AliasDefinition,
   Definition,
+  AliasDefinition,
   EnumDefinition,
+  TypeDefinition,
+  UnionDefinition,
   Kind,
   Location,
   Name,
   Node,
-  TypeDefinition,
-  UnionDefinition,
 } from "@apexlang/core/ast";
 import { CommonRules } from "@apexlang/core/rules";
 import { ApexError } from "@apexlang/core/error";
 import * as os from "os";
 import * as path from "path";
 import * as fs from "fs";
+
+const tokenSeparators = /[\t= <>{}()\[\]\:,\n\r"]/;
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -229,6 +231,12 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
           label: unionDef.name.value,
           kind: CompletionItemKind.Struct,
         });
+      } else if (def.isKind(Kind.AliasDefinition)) {
+        const aliasDef = def as AliasDefinition;
+        completionItems.push({
+          label: aliasDef.name.value,
+          kind: CompletionItemKind.Struct,
+        });
       }
     });
     documentCompletions.set(textDocument.uri, completionItems);
@@ -382,7 +390,24 @@ function filterDefinitions(
     });
 }
 
-const tokenSeparators = /[\t= <>{}()"]/;
+connection.onDidCloseTextDocument(
+  (didCloseTextDocument: DidCloseTextDocumentParams) => {
+    documentCompletions.delete(didCloseTextDocument.textDocument.uri);
+  }
+);
+
+// This handler resolves additional information for the item selected in
+// the completion list.
+connection.onCompletionResolve((item: CompletionItem): CompletionItem => {
+  return item;
+});
+
+// Make the text document manager listen on the connection
+// for open, change and close text document events
+documents.listen(connection);
+
+// Listen on the connection
+connection.listen();
 
 function getSymbolAtPosition(txtDoc: TextDocument, position: Position): string {
   const range = {
@@ -408,22 +433,3 @@ function getSymbolAtPosition(txtDoc: TextDocument, position: Position): string {
 
   return symbol;
 }
-
-connection.onDidCloseTextDocument(
-  (didCloseTextDocument: DidCloseTextDocumentParams) => {
-    documentCompletions.delete(didCloseTextDocument.textDocument.uri);
-  }
-);
-
-// This handler resolves additional information for the item selected in
-// the completion list.
-connection.onCompletionResolve((item: CompletionItem): CompletionItem => {
-  return item;
-});
-
-// Make the text document manager listen on the connection
-// for open, change and close text document events
-documents.listen(connection);
-
-// Listen on the connection
-connection.listen();

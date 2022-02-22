@@ -12,14 +12,22 @@ import {
   TextDocumentSyncKind,
   InitializeResult,
   DidCloseTextDocumentParams,
+  DefinitionParams,
+  DeclarationLink,
+  Position,
+  LocationLink,
+  TypeDefinitionParams,
 } from "vscode-languageserver/node";
 
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { parse, validate } from "@apexlang/core";
 import {
+  AliasDefinition,
+  Definition,
   EnumDefinition,
   Kind,
   Location,
+  Name,
   Node,
   TypeDefinition,
   UnionDefinition,
@@ -40,6 +48,11 @@ const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 const documentCompletions: Map<string, CompletionItem[]> = new Map<
   string,
   CompletionItem[]
+>();
+
+const documentDefinitions: Map<string, Definition[]> = new Map<
+  string,
+  Definition[]
 >();
 
 let hasConfigurationCapability = false;
@@ -70,6 +83,8 @@ connection.onInitialize((params: InitializeParams) => {
       completionProvider: {
         resolveProvider: true,
       },
+      definitionProvider: true,
+      typeDefinitionProvider: true,
     },
   };
   if (hasWorkspaceFolderCapability) {
@@ -217,6 +232,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
       }
     });
     documentCompletions.set(textDocument.uri, completionItems);
+    documentDefinitions.set(textDocument.uri, doc.definitions);
 
     const errors = validate(doc, ...CommonRules);
 
@@ -274,7 +290,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 
 connection.onDidChangeWatchedFiles((_change) => {
   // Monitored files have change in VSCode
-  connection.console.log("We received an file change event");
+  //connection.console.log("We received an file change event");
 });
 
 // This handler provides the initial list of the completion items.
@@ -290,6 +306,109 @@ connection.onCompletion(
   }
 );
 
+interface NamedDefinition extends Definition {
+  name: Name;
+}
+
+connection.onTypeDefinition(
+  (definition: TypeDefinitionParams): DeclarationLink[] => {
+    console.log("onTypeDefinition", definition.textDocument.uri);
+    const txtDoc = documents.get(definition.textDocument.uri);
+    if (txtDoc == undefined) {
+      return [];
+    }
+    const definitions = documentDefinitions.get(definition.textDocument.uri);
+    if (definitions == undefined) {
+      return [];
+    }
+
+    const symbol = getSymbolAtPosition(txtDoc, definition.position);
+
+    return filterDefinitions(txtDoc, definitions, symbol);
+  }
+);
+
+connection.onDefinition((definition: DefinitionParams): DeclarationLink[] => {
+  console.log("onDefinition", definition.textDocument.uri);
+  const txtDoc = documents.get(definition.textDocument.uri);
+  if (txtDoc == undefined) {
+    return [];
+  }
+  const definitions = documentDefinitions.get(definition.textDocument.uri);
+  if (definitions == undefined) {
+    return [];
+  }
+
+  const symbol = getSymbolAtPosition(txtDoc, definition.position);
+
+  return filterDefinitions(txtDoc, definitions, symbol);
+});
+
+function filterDefinitions(
+  txtDoc: TextDocument,
+  definitions: Definition[],
+  symbol: string
+): DeclarationLink[] {
+  return definitions
+    .filter((def) => {
+      const named = def as NamedDefinition;
+      switch (def.getKind()) {
+        case Kind.AliasDefinition:
+        case Kind.DirectiveDefinition:
+        case Kind.EnumDefinition:
+        case Kind.EnumValueDefinition:
+        case Kind.RoleDefinition:
+        case Kind.UnionDefinition:
+        case Kind.TypeDefinition:
+          return named.name != undefined && named.name.value == symbol;
+        default:
+          return false;
+      }
+    })
+    .map((def) => {
+      const named = def as NamedDefinition;
+      const loc = named.name.getLoc() as Location;
+      return LocationLink.create(
+        txtDoc.uri,
+        {
+          start: txtDoc.positionAt(loc.start),
+          end: txtDoc.positionAt(loc.end),
+        },
+        {
+          start: txtDoc.positionAt(loc.start),
+          end: txtDoc.positionAt(loc.end),
+        }
+      );
+    });
+}
+
+const tokenSeparators = /[\t= <>{}()"]/;
+
+function getSymbolAtPosition(txtDoc: TextDocument, position: Position): string {
+  const range = {
+    start: { line: position.line, character: 0 },
+    end: { line: position.line, character: Number.MAX_VALUE },
+  };
+
+  const context = txtDoc.getText(range);
+  const offset = position.character;
+
+  let start = offset - 1;
+  while (start > 0 && !context[start].match(tokenSeparators)) {
+    start--;
+  }
+
+  let end = offset;
+  while (end < context.length && !context[end].match(tokenSeparators)) {
+    end++;
+  }
+
+  const symbol = context.substr(start + 1, end - start - 1);
+  console.log(`${start}->${end}- symbol: ${symbol}`);
+
+  return symbol;
+}
+
 connection.onDidCloseTextDocument(
   (didCloseTextDocument: DidCloseTextDocumentParams) => {
     documentCompletions.delete(didCloseTextDocument.textDocument.uri);
@@ -298,11 +417,9 @@ connection.onDidCloseTextDocument(
 
 // This handler resolves additional information for the item selected in
 // the completion list.
-connection.onCompletionResolve(
-  (item: CompletionItem): CompletionItem => {
-    return item;
-  }
-);
+connection.onCompletionResolve((item: CompletionItem): CompletionItem => {
+  return item;
+});
 
 // Make the text document manager listen on the connection
 // for open, change and close text document events

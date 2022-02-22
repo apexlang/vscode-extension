@@ -122,12 +122,13 @@
     }
   },
   "scripts": {
+    "postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
     "vscode:prepublish": "npm run esbuild-client-base -- --minify && npm run esbuild-server-base -- --minify",
 		"esbuild-client-base": "esbuild ./client/src/extension.ts --bundle --outfile=client/out/extension.js --external:vscode --format=cjs --platform=node",
     "esbuild-server-base": "esbuild ./server/src/server.ts --bundle --outfile=server/out/server.js --external:vscode --format=cjs --platform=node",
 		"esbuild-client": "npm run esbuild-client-base -- --sourcemap",
 		"esbuild-client-watch": "npm run esbuild-client-base -- --sourcemap --watch",
-    "watch": "npm run esbuild-client-watch",
+    "watch": "npm run esbuild-client-base",
 		"test-compile": "tsc -p ./",
     "test": "sh ./scripts/e2e.sh"
   },

@@ -1,14 +1,19 @@
-# VS Code extension for the Apex language
+# Apex language support for VS Code
 
 Extension for editing Apex Interface Defintion Language (IDL) documents inside VS Code.  
 
 ## Functionality
 
-This Language Server works for plain text file. It has the following language features:
-- Completions
-- Diagnostics regenerated on each file change or configuration change
+This extension provides the following language features:
 
-## Running the Project
+- Syntax highlighting
+- Completions
+- Parsing and validation checks
+- Go to definition
+
+## Development
+
+### Running the Project
 
 - Run `npm install` in this folder. This installs all necessary npm modules in both the client and server folder
 - Open VS Code on this folder.
@@ -19,7 +24,7 @@ This Language Server works for plain text file. It has the following language fe
 - If you want to debug the server as well use the launch configuration `Attach to Server`
 - In the [Extension Development Host] instance of VSCode, open a document in 'Apex' language mode.
 
-## Packaging & Installing
+### Packaging & Installing
 
-- Run `vsce package` to generate `apexlang-vscode-extension-{semver}.vsix`.
+- Run `vsce package` to generate `apexlang-{semver}.vsix`.
 - Install the `.vsix` file in VS Code using the `Install from VSIX...` option under the `Extensions` view (three dots dropdown).

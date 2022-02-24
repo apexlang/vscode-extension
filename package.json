@@ -1,18 +1,21 @@
 {
-  "name": "apexlang-vscode-extension",
-  "displayName": "Apex language VS Code extension",
-  "preview": true,
+  "name": "apexlang",
+  "publisher": "apexlang",
+  "displayName": "Apex language support for VS Code",
+  "preview": false,
   "private": false,
   "description": "VS Code extension and language server for Apex",
   "icon": "assets/images/logo.png",
-  "author": "Phil Kedy",
+  "author": "Apex Language",
   "license": "Apache-2.0",
   "version": "0.0.3",
+  "bugs": {
+    "url": "https://github.com/apexlang/vscode-extension/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/apexlang/vscode-extension"
   },
-  "publisher": "apexlang",
   "categories": [],
   "keywords": [
     "apex apexlang idl codegen"
@@ -99,7 +102,7 @@
     ],
     "configuration": {
       "type": "object",
-      "title": "VSCode Apex language",
+      "title": "Apex language",
       "properties": {
         "apexlang.maxNumberOfProblems": {
           "scope": "resource",

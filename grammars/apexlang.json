@@ -31,6 +31,7 @@
         { "include": "#apex-string-value" },
         { "include": "#apex-skip-newlines" },
         { "include": "#apex-comment" },
+        { "include": "#apex-directive" },
         { "include": "#literal-quasi-embedded" }
       ]
     },
@@ -171,8 +172,33 @@
         { "include": "#apex-description-docstring" },
         { "include": "#apex-description-singleline" },
         { "include": "#apex-variable-definitions" },
+        { "include": "#apex-directive" },
         { "include": "#apex-input-types" },
         { "include": "#literal-quasi-embedded" }
+      ]
+    },
+    "apex-simple-comment": {
+      "patterns": [
+        {
+          "comment": "need to prefix comment space with a scope else Atom's reflow cmd doesn't work",
+          "name": "comment.line.apex.js",
+          "match": "(\\s*)(#).*",
+          "captures": {
+            "1": {
+              "name": "punctuation.whitespace.comment.leading.apex"
+            }
+          }
+        },
+        {
+          "name": "comment.line.apex.js",
+          "begin": "(\"\"\")",
+          "end": "(\"\"\")",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.whitespace.comment.leading.apex"
+            }
+          }
+        }
       ]
     },
     "apex-comment": {
@@ -250,6 +276,7 @@
         { "include": "#apex-colon" },
         { "include": "#apex-input-types" },
         { "include": "#apex-variable-assignment" },
+        { "include": "#apex-directive" },
         { "include": "#literal-quasi-embedded" },
         { "include": "#apex-skip-newlines" }
       ]
@@ -286,6 +313,7 @@
         { "include": "#apex-colon" },
         { "include": "#apex-input-types" },
         { "include": "#apex-variable-assignment" },
+        { "include": "#apex-directive" },
         { "include": "#literal-quasi-embedded" },
         { "include": "#apex-skip-newlines" }
       ]
@@ -330,8 +358,10 @@
             { "include": "#apex-description-docstring" },
             { "include": "#apex-description-singleline" },
             { "include": "#apex-input-types" },
+            { "include": "#apex-directive" },
             { "include": "#apex-colon" },
             { "include": "#apex-input-types" },
+            { "include": "#apex-directive" },
             { "include": "#apex-comma" },
             { "include": "#literal-quasi-embedded" }
           ]
@@ -500,7 +530,7 @@
         "1": { "name": "meta.brace.round.directive.apex" }
       },
       "patterns": [
-        { "include": "#apex-comment" },
+        { "include": "#apex-simple-comment" },
         { "include": "#apex-description-docstring" },
         { "include": "#apex-description-singleline" },
         {
@@ -514,13 +544,14 @@
             "3": { "name": "punctuation.comma.apex" }
           },
           "patterns": [
-            { "include": "#apex-comment" },
+            { "include": "#apex-simple-comment" },
             { "include": "#apex-description-docstring" },
             { "include": "#apex-description-singleline" },
             { "include": "#apex-value" },
             { "include": "#apex-skip-newlines" }
           ]
         },
+        { "include": "#apex-value" },
         { "include": "#literal-quasi-embedded" }
       ]
     },
@@ -587,6 +618,7 @@
         "2": { "name": "support.type.enum.apex" }
       },
       "patterns": [
+        { "include": "#apex-directive" },
         {
           "name": "meta.type.object.apex",
           "begin": "\\s*({)",
@@ -605,6 +637,7 @@
             { "include": "#apex-enum-value" },
             { "include": "#apex-float-value" },
             { "include": "#apex-string-value" },
+            { "include": "#apex-directive" },
             { "include": "#literal-quasi-embedded" }
           ]
         }
@@ -641,7 +674,7 @@
     },
     "apex-value": {
       "patterns": [
-        { "include": "#apex-comment" },
+        { "include": "#apex-simple-comment" },
         { "include": "#apex-description-docstring" },
         { "include": "#apex-variable-name" },
         { "include": "#apex-float-value" },
@@ -690,11 +723,10 @@
       ]
     },
     "apex-object-field": {
-      "match": "\\s*(([_A-Za-z][_0-9A-Za-z]*))\\s*(:)",
+      "match": "\\s*([_A-Za-z][_0-9A-Za-z]*)\\s*(:)",
       "captures": {
-        "1": { "name": "constant.object.key.apex" },
-        "2": { "name": "string.unquoted.apex" },
-        "3": { "name": "punctuation.apex" }
+        "1": { "name": "parameter.object.key.apex" },
+        "2": { "name": "punctuation.apex" }
       }
     },
     "apex-union": {
@@ -733,24 +765,8 @@
         { "include": "#apex-description-docstring" },
         { "include": "#apex-description-singleline" },
         { "include": "#apex-skip-newlines" },
+        { "include": "#apex-directive" },
         { "include": "#literal-quasi-embedded" }
-      ]
-    },
-    "native-interpolation": {
-      "name": "native.interpolation",
-      "begin": "\\s*(\\${)",
-      "end": "(})",
-      "beginCaptures": {
-        "1": { "name": "keyword.other.substitution.begin" }
-      },
-      "endCaptures": {
-        "1": { "name": "keyword.other.substitution.end" }
-      },
-      "patterns": [
-        { "include": "source.js" },
-        { "include": "source.ts" },
-        { "include": "source.js.jsx" },
-        { "include": "source.tsx" }
       ]
     },
     "apex-skip-newlines": {

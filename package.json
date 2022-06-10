@@ -34,7 +34,9 @@
         "extensions": [
           ".apex",
           ".apexlang",
-          ".apexidl"
+          ".apexidl",
+          ".apexdef",
+          ".aidl"
         ],
         "icon": {
           "light": "assets/icons/light.png",

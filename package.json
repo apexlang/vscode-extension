@@ -8,7 +8,7 @@
   "icon": "assets/images/logo.png",
   "author": "Apex Language",
   "license": "Apache-2.0",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "bugs": {
     "url": "https://github.com/apexlang/vscode-extension/issues"
   },

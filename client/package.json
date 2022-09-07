@@ -3,7 +3,7 @@
 	"description": "VSCode client for the Apex language server",
 	"author": "Phil Kedy",
 	"license": "Apache-2.0",
-	"version": "0.0.3",
+	"version": "0.0.5",
 	"publisher": "apexlang",
 	"repository": {
 		"type": "git",

@@ -13,6 +13,7 @@
         { "include": "#apex-alias-definition" },
         { "include": "#apex-import-definition" },
         { "include": "#apex-directive-definition" },
+        { "include": "#apex-func-definition" },
         { "include": "#apex-type-interface" },
         { "include": "#apex-enum" },
         { "include": "#apex-union" },
@@ -32,6 +33,27 @@
         { "include": "#apex-skip-newlines" },
         { "include": "#apex-comment" },
         { "include": "#apex-directive" },
+        { "include": "#literal-quasi-embedded" }
+      ]
+    },
+    "apex-func-definition": {
+      "name": "meta.namespace.apex",
+      "begin": "\\s*(\\bfunc\\b)\\s*([_A-Za-z][_0-9A-Za-z]*)",
+      "end": "(?=.)",
+      "applyEndPatternLast": 1,
+      "beginCaptures": {
+        "1": { "name": "keyword.func.apex" },
+        "2": { "name": "variable.function.apex" }
+      },
+      "patterns": [
+        { "include": "#apex-variable-definitions" },
+        { "include": "#apex-colon" },
+        { "include": "#apex-input-types" },
+        { "include": "#apex-skip-newlines" },
+        { "include": "#apex-comment" },
+        { "include": "#apex-directive" },
+        { "include": "#apex-skip-newlines" },
+        { "include": "#apex-comment" },
         { "include": "#literal-quasi-embedded" }
       ]
     },
@@ -98,15 +120,14 @@
     },
     "apex-type-interface": {
       "name": "meta.type.interface.apex",
-      "begin": "\\s*\\b(?:(extends?)?\\b\\s*\\b(type)|(interface)|(role))\\b\\s*([_A-Za-z][_0-9A-Za-z]*)?",
+      "begin": "\\s*\\b(?:(extends?)?\\b\\s*\\b(type)|(interface))\\b\\s*([_A-Za-z][_0-9A-Za-z]*)?",
       "end": "(?=.)",
       "applyEndPatternLast": 1,
       "captures": {
         "1": { "name": "keyword.type.apex" },
         "2": { "name": "keyword.type.apex" },
         "3": { "name": "keyword.interface.apex" },
-        "4": { "name": "keyword.role.apex" },
-        "5": { "name": "support.type.apex" }
+        "4": { "name": "support.type.apex" }
       },
       "patterns": [
         {
@@ -322,13 +343,6 @@
       "patterns": [
         { "include": "#apex-scalar-type" },
         {
-          "match": "\\s*([_A-Za-z][_0-9A-Za-z]*)(?:\\s*(\\?))?",
-          "captures": {
-            "1": { "name": "support.type.apex" },
-            "2": { "name": "keyword.operator.nulltype.apex" }
-          }
-        },
-        {
           "name": "meta.type.list.apex",
           "begin": "\\s*(\\[)",
           "end": "\\s*(\\])(?:\\s*(\\?))?",
@@ -365,6 +379,13 @@
             { "include": "#apex-comma" },
             { "include": "#literal-quasi-embedded" }
           ]
+        },
+        {
+          "match": "\\s*\\b(?!namespace|import|directive|func|interface|type|alias|union|enum)([_A-Za-z][_0-9A-Za-z]*)(\\?)?\\b",
+          "captures": {
+            "1": { "name": "support.type.apex" },
+            "2": { "name": "keyword.operator.nulltype.apex" }
+          }
         }
       ]
     },
@@ -389,7 +410,7 @@
       ]
     },
     "apex-scalar-type": {
-      "match": "\\s*\\b(i8|u8|i16|u16|i32|u32|i64|u64|f32|f64|bool|string|datetime|bytes|raw)\\b(?:\\s*(!))?",
+      "match": "\\s*\\b(void|i8|u8|i16|u16|i32|u32|i64|u64|f32|f64|bool|string|datetime|bytes|raw|any|value)\\b(?:\\s*(!))?",
       "captures": {
         "1": { "name": "support.type.builtin.apex" },
         "2": { "name": "keyword.operator.nulltype.apex" }

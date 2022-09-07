@@ -1,7 +1,7 @@
 {
 	"name": "apex-language-server",
 	"description": "Apex language server in node.",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"author": "Phil Kedy",
 	"license": "Apache-2.0",
 	"engines": {
@@ -12,7 +12,7 @@
 		"url": "https://github.com/apexlang/vscode-extension"
 	},
 	"dependencies": {
-		"@apexlang/core": "^0.0.24",
+		"@apexlang/core": "0.1.0",
 		"vscode-languageserver": "^7.0.0",
 		"vscode-languageserver-textdocument": "^1.0.1"
 	},

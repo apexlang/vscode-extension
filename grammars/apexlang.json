@@ -22,14 +22,14 @@
     },
     "apex-namespace-definition": {
       "name": "meta.namespace.apex",
-      "begin": "\\s*(\\bnamespace\\b)\\s*",
+      "begin": "\\s*(\\bnamespace\\b)\\s*(\"[^\"]*\")",
       "end": "(?=.)",
       "applyEndPatternLast": 1,
       "beginCaptures": {
-        "1": { "name": "keyword.namespace.apex" }
+        "1": { "name": "keyword.namespace.apex" },
+        "2": { "name": "string.quoted.namespace.apex" }
       },
       "patterns": [
-        { "include": "#apex-string-value" },
         { "include": "#apex-skip-newlines" },
         { "include": "#apex-comment" },
         { "include": "#apex-directive" },
@@ -180,8 +180,8 @@
     },
     "apex-type-definition": {
       "comment": "key (optionalArgs): Type",
-      "begin": "\\s*([_A-Za-z][_0-9A-Za-z]*)(?=\\s*(\\(|\\{)|:)",
-      "end": "(?=\\s*(([_A-Za-z][_0-9A-Za-z]*)\\s*((\\(|\\{)|:)|(})))|\\s*(,)",
+      "begin": "\\s*([_A-Za-z][_0-9A-Za-z]*)(?=\\s*(\\(|\\[)|:)",
+      "end": "(?=\\s*(([_A-Za-z][_0-9A-Za-z]*)\\s*((\\(|\\[)|:)|(})))|\\s*(,)",
       "beginCaptures": {
         "1": { "name": "variable.apex" }
       },
@@ -266,8 +266,8 @@
       "end": "\"\"\""
     },
     "apex-variable-definitions": {
-      "begin": "\\s*((\\(|\\{))",
-      "end": "\\s*((\\)|\\}))",
+      "begin": "\\s*((\\(|\\[))",
+      "end": "\\s*((\\)|\\]))",
       "captures": {
         "1": { "name": "meta.brace.round.apex" }
       },
@@ -282,8 +282,8 @@
     "apex-variable-definition": {
       "comment": "variable: type = value,.... which may be a list",
       "name": "meta.variables.apex",
-      "begin": "\\s*(\\$?[_A-Za-z][_0-9A-Za-z]*)(?=\\s*(\\(|\\{)|:)",
-      "end": "(?=\\s*((\\$?[_A-Za-z][_0-9A-Za-z]*)\\s*((\\(|\\{)|:)|(}|\\))))|\\s*(,)",
+      "begin": "\\s*(\\$?[_A-Za-z][_0-9A-Za-z]*)(?=\\s*(\\(|\\[)|:)",
+      "end": "(?=\\s*((\\$?[_A-Za-z][_0-9A-Za-z]*)\\s*((\\(|\\[)|:)|(\\]|\\))))|\\s*(,)",
       "beginCaptures": {
         "1": { "name": "variable.parameter.apex" }
       },

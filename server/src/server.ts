@@ -38,7 +38,7 @@ import * as os from "os";
 import * as path from "path";
 import * as fs from "fs";
 
-const tokenSeparators = /[\t= <>{}()\[\]\:,\n\r"]/;
+const tokenSeparators = /[\t= <>{}()\[\]\:,\n\r"\\?]/;
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -365,7 +365,7 @@ function filterDefinitions(
         case Kind.DirectiveDefinition:
         case Kind.EnumDefinition:
         case Kind.EnumValueDefinition:
-        case Kind.RoleDefinition:
+        case Kind.InterfaceDefinition:
         case Kind.UnionDefinition:
         case Kind.TypeDefinition:
           return named.name != undefined && named.name.value == symbol;

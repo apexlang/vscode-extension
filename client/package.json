@@ -1,9 +1,9 @@
 {
   "name": "apex-client",
   "description": "VSCode client for the Apex language server",
-  "author": "Phil Kedy",
+  "author": "Apex Authors",
   "license": "Apache-2.0",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "publisher": "apexlang",
   "repository": {
     "type": "git",

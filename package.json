@@ -6,9 +6,9 @@
   "private": false,
   "description": "VS Code extension and language server for Apex",
   "icon": "assets/images/logo.png",
-  "author": "Apex Language",
+  "author": "Apex Authors",
   "license": "Apache-2.0",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "bugs": {
     "url": "https://github.com/apexlang/vscode-extension/issues"
   },
@@ -36,7 +36,8 @@
           ".apexlang",
           ".apexidl",
           ".apexdef",
-          ".aidl"
+          ".aidl",
+          ".axdl"
         ],
         "icon": {
           "light": "assets/icons/light.png",

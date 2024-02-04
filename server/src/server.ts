@@ -25,6 +25,7 @@ import {
   Definition,
   AliasDefinition,
   EnumDefinition,
+  EnumValueDefinition,
   TypeDefinition,
   UnionDefinition,
   Kind,
@@ -38,7 +39,7 @@ import * as os from "os";
 import * as path from "path";
 import * as fs from "fs";
 
-const tokenSeparators = /[\t= <>{}()\[\]\:,\n\r"\\?]/;
+const tokenSeparators = /[\t= <>{}()\\[\]\\:,\n\r"\\?]/;
 
 // Create a connection for the server, using Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -219,7 +220,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
           label: enumDef.name.value,
           kind: CompletionItemKind.Enum,
         });
-        enumDef.values.map((ev) => {
+        enumDef.values.map((ev: EnumValueDefinition) => {
           completionItems.push({
             label: ev.name.value,
             kind: CompletionItemKind.EnumMember,

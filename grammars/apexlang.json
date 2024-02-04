@@ -768,6 +768,7 @@
             "2": { "name": "support.type.apex" }
           },
           "patterns": [
+            { "include": "#apex-directive" },
             { "include": "#apex-comment" },
             { "include": "#apex-description-docstring" },
             { "include": "#apex-description-singleline" },

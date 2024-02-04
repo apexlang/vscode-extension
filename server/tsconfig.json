@@ -10,8 +10,8 @@
     "rootDir": "src",
     "baseUrl": ".",
     "paths": {
-      "@apexlang/core": ["node_modules/@apexlang/core/dist/types"],
-      "@apexlang/core/*": ["node_modules/@apexlang/core/dist/types/*"]
+      "@apexlang/core": ["node_modules/@apexlang/core/script"],
+      "@apexlang/core/*": ["node_modules/@apexlang/core/script/*"],
     },
   },
   "include": ["src"],

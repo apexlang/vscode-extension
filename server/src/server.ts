@@ -173,8 +173,19 @@ const home = os.homedir();
 const definitionsDir = path.join(home, ".apex", "definitions");
 
 function resolver(location: string, _from: string): string {
-  let loc = path.join(definitionsDir, ...location.split("/"));
-  if (!loc.endsWith(".apex")) {
+  const loc = path.join(definitionsDir, ...location.split("/"));
+
+  if (!loc.endsWith(".apex") && !loc.endsWith(".axdl")) {
+    const axdlLoc = loc + ".axdl";
+    try {
+      const stats = fs.statSync(axdlLoc);
+      if (stats.isFile()) {
+        return fs.readFileSync(axdlLoc).toString();
+      }
+    } catch (_) {
+      // Do nothing.
+    }
+
     const apexLoc = loc + ".apex";
     try {
       const stats = fs.statSync(apexLoc);
@@ -184,15 +195,31 @@ function resolver(location: string, _from: string): string {
     } catch (_) {
       // Do nothing.
     }
+
     const stats = fs.statSync(loc);
-    if (!stats.isFile()) {
-      if (stats.isDirectory()) {
-        loc = path.join(loc, "index.apex");
-      } else {
-        loc += ".apex";
+    if (!stats.isFile() && stats.isDirectory()) {
+      const axdlLoc = path.join(loc, "index.axdl");
+      try {
+        const stats = fs.statSync(axdlLoc);
+        if (stats.isFile()) {
+          return fs.readFileSync(axdlLoc).toString();
+        }
+      } catch (_) {
+        // Do nothing.
+      }
+
+      const apexLoc = path.join(loc, "index.apex");
+      try {
+        const stats = fs.statSync(apexLoc);
+        if (stats.isFile()) {
+          return fs.readFileSync(apexLoc).toString();
+        }
+      } catch (_) {
+        // Do nothing.
       }
     }
   }
+
   return fs.readFileSync(loc).toString();
 }
 

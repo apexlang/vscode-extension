@@ -2,17 +2,13 @@
   "compilerOptions": {
     "target": "es2019",
     "lib": ["ES2019"],
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "ES2015",
+    "moduleResolution": "bundler",
     "sourceMap": true,
     "strict": true,
     "outDir": "out",
     "rootDir": "src",
     "baseUrl": ".",
-    "paths": {
-      "@apexlang/core": ["node_modules/@apexlang/core/script"],
-      "@apexlang/core/*": ["node_modules/@apexlang/core/script/*"],
-    },
   },
   "include": ["src"],
   "exclude": ["node_modules", ".vscode-test"]

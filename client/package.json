@@ -3,7 +3,7 @@
   "description": "VSCode client for the Apex language server",
   "author": "Apex Authors",
   "license": "Apache-2.0",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "publisher": "apexlang",
   "repository": {
     "type": "git",
